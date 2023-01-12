@@ -86,7 +86,7 @@ async function exportSecrets() {
     for (const result of results) {
         // Output the result
 
-        console.log(result)
+        core.debug(result)
 
         const { value, request, cachedResponse } = result;
         if (cachedResponse) {
@@ -121,7 +121,7 @@ function parseSecretsInput(secretsInput) {
       return []
     }
 
-    console.log(`Parsing secrets input: "${secretsInput}"`);
+    core.debug(`Parsing secrets input: "${secretsInput}"`);
 
     const secrets = secretsInput
         .split(';')
