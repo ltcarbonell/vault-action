@@ -17,6 +17,8 @@ async function exportSecrets() {
     const secretsInput = core.getInput('secrets', { required: false });
     const secretRequests = parseSecretsInput(secretsInput);
 
+    const base64Encoded = core.getInput('base64Encoded', { required: false }) != 'false';
+
     const vaultMethod = (core.getInput('method', { required: false }) || 'token').toLowerCase();
     const authPayload = core.getInput('authPayload', { required: false });
     if (!AUTH_METHODS.includes(vaultMethod) && !authPayload) {
@@ -82,6 +84,10 @@ async function exportSecrets() {
     const results = await getSecrets(requests, client);
 
     for (const result of results) {
+        // Output the result
+
+        core.debug(`${result}`)
+
         const { value, request, cachedResponse } = result;
         if (cachedResponse) {
             core.debug('ℹ using cached response');
@@ -95,11 +101,11 @@ async function exportSecrets() {
             core.exportVariable(request.envVarName, `${value}`);
         }
         core.setOutput(request.outputVarName, `${value}`);
-        core.debug(`✔ ${request.path} => outputs.${request.outputVarName}${exportEnv ? ` | env.${request.envVarName}` : ''}`);
+        core.debug(`✔✔ ${request.path} => outputs.${request.outputVarName}${exportEnv ? ` | env.${request.envVarName}` : ''}`);
     }
 };
 
-/** @typedef {Object} SecretRequest 
+/** @typedef {Object} SecretRequest
  * @property {string} path
  * @property {string} envVarName
  * @property {string} outputVarName
@@ -114,6 +120,8 @@ function parseSecretsInput(secretsInput) {
     if (!secretsInput) {
       return []
     }
+
+    core.debug(`Parsing secrets input: "${secretsInput}"`);
 
     const secrets = secretsInput
         .split(';')
