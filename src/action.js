@@ -102,6 +102,7 @@ async function exportSecrets() {
         }
         core.setOutput(request.outputVarName, `${value}`);
         core.debug(`✔✔ ${request.path} => outputs.${request.outputVarName}${exportEnv ? ` | env.${request.envVarName}` : ''}`);
+        core.notice(`✔✔ ${request.path} => outputs.${request.outputVarName}${exportEnv ? ` | env.${request.envVarName}` : ''}`);
     }
 };
 
@@ -121,7 +122,7 @@ function parseSecretsInput(secretsInput) {
       return []
     }
 
-    core.debug(`Parsing secrets input: "${secretsInput}"`);
+    core.notice(`Parsing secrets input: "${secretsInput}"`);
 
     const secrets = secretsInput
         .split(';')
